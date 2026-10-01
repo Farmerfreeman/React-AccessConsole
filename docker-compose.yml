@@ -1,0 +1,36 @@
+# Local development stack for Access Console.
+#
+#   docker compose up -d     start Keycloak
+#   docker compose down      stop and remove it (state resets on next start)
+#
+# Keycloak admin console: http://localhost:8080  (admin / admin, dev only)
+# Realm issuer:           http://localhost:8080/realms/access-console
+
+services:
+  keycloak:
+    # Pinned on purpose. Bump deliberately rather than tracking :latest.
+    image: quay.io/keycloak/keycloak:26.4
+    # start-dev = HTTP, in-memory H2 database, relaxed hostname checks.
+    # NOT suitable for production. --import-realm loads any realm JSON found
+    # in /opt/keycloak/data/import on first start (skipped if the realm exists).
+    command: start-dev --import-realm
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: admin
+    ports:
+      # Bound to loopback so the default dev credentials aren't reachable
+      # from other machines on your network.
+      - "127.0.0.1:8080:8080"
+    volumes:
+      # Realm definition (client, roles, test users) lives in ./keycloak.
+      - ./keycloak:/opt/keycloak/data/import:ro
+
+  # Added in Phase 4 once the ASP.NET Core API exists:
+  # api:
+  #   build: ./api
+  #   environment:
+  #     Auth__Authority: http://keycloak:8080/realms/access-console
+  #   ports:
+  #     - "127.0.0.1:5080:8080"
+  #   depends_on:
+  #     - keycloak

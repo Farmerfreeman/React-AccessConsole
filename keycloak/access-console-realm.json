@@ -1,0 +1,127 @@
+{
+  "realm": "access-console",
+  "displayName": "Access Console",
+  "enabled": true,
+  "sslRequired": "external",
+  "registrationAllowed": false,
+  "resetPasswordAllowed": false,
+  "rememberMe": false,
+  "verifyEmail": false,
+  "loginWithEmailAllowed": true,
+  "duplicateEmailsAllowed": false,
+  "bruteForceProtected": true,
+  "accessTokenLifespan": 300,
+  "ssoSessionIdleTimeout": 1800,
+  "ssoSessionMaxLifespan": 36000,
+  "roles": {
+    "realm": [
+      {
+        "name": "admin",
+        "description": "Full access to Access Console: manage users, roles and sessions, read audit log",
+        "composite": false,
+        "clientRole": false
+      },
+      {
+        "name": "auditor",
+        "description": "Audit role for Access Console Demo",
+        "composite": false,
+        "clientRole": false
+      },
+      {
+        "name": "viewer",
+        "description": "Read-only role for Access Console Demo",
+        "composite": false,
+        "clientRole": false
+      }
+    ]
+  },
+  "clients": [
+    {
+      "clientId": "AccessConsole",
+      "name": "Access Console",
+      "description": "Access Console SPA (public client, Authorization Code + PKCE)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": true,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "consentRequired": false,
+      "fullScopeAllowed": true,
+      "rootUrl": "",
+      "baseUrl": "",
+      "redirectUris": [
+        "http://localhost:5173/*"
+      ],
+      "webOrigins": [
+        "http://localhost:5173"
+      ],
+      "attributes": {
+        "pkce.code.challenge.method": "S256",
+        "post.logout.redirect.uris": "http://localhost:5173/*"
+      },
+      "defaultClientScopes": [
+        "web-origins",
+        "acr",
+        "profile",
+        "roles",
+        "basic",
+        "email"
+      ],
+      "optionalClientScopes": [],
+      "protocolMappers": [
+        {
+          "name": "access-console-api-audience",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-audience-mapper",
+          "consentRequired": false,
+          "config": {
+            "included.client.audience": "access-console-api",
+            "id.token.claim": "false",
+            "access.token.claim": "true",
+            "introspection.token.claim": "true"
+          }
+        }
+      ]
+    }
+  ],
+  "users": [
+    {
+      "username": "alice",
+      "enabled": true,
+      "email": "alice@example.test",
+      "emailVerified": true,
+      "firstName": "Alice",
+      "lastName": "Admin",
+      "credentials": [
+        { "type": "password", "value": "password", "temporary": false }
+      ],
+      "realmRoles": ["default-roles-access-console", "admin"]
+    },
+    {
+      "username": "bob",
+      "enabled": true,
+      "email": "bob@example.test",
+      "emailVerified": true,
+      "firstName": "Bob",
+      "lastName": "Auditor",
+      "credentials": [
+        { "type": "password", "value": "password", "temporary": false }
+      ],
+      "realmRoles": ["default-roles-access-console", "auditor"]
+    },
+    {
+      "username": "carol",
+      "enabled": true,
+      "email": "carol@example.test",
+      "emailVerified": true,
+      "firstName": "Carol",
+      "lastName": "Viewer",
+      "credentials": [
+        { "type": "password", "value": "password", "temporary": false }
+      ],
+      "realmRoles": ["default-roles-access-console", "viewer"]
+    }
+  ]
+}
